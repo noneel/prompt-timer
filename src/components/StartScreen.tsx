@@ -22,8 +22,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
           Speaking Prompts
         </h1>
         <p className="text-gray-600 max-w-md mx-auto">
-          Practice your public speaking with timed prompts. Upload your custom
-          prompts or use our samples.
+          Practice your public speaking with timed prompts.
         </p>
       </motion.div>
 
@@ -44,4 +43,3 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
 };
 
 export default StartScreen;
-
