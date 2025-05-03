@@ -1,14 +1,14 @@
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import StartScreen from './components/StartScreen';
-import PromptScreen from './components/PromptScreen';
-import { AppState } from './types';
-import { useTimer } from './hooks/useTimer';
-import { usePromptsManager } from './hooks/usePromptsManager';
+import React, { useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import StartScreen from "./components/StartScreen";
+import PromptScreen from "./components/PromptScreen";
+import { AppState } from "./types";
+import { useTimer } from "./hooks/useTimer";
+import { usePromptsManager } from "./hooks/usePromptsManager";
 
 function App() {
-  const [appState, setAppState] = useState<AppState>('start');
-  
+  const [appState, setAppState] = useState<AppState>("start");
+
   // Initialize timer and prompts hooks
   const {
     seconds,
@@ -20,7 +20,7 @@ function App() {
     addTime,
     togglePauseResume,
   } = useTimer();
-  
+
   const {
     currentPrompt,
     hasUploadedFile,
@@ -30,38 +30,53 @@ function App() {
 
   // Start the prompt session
   const handleStart = useCallback(() => {
-    setAppState('prompt');
+    setAppState("prompt");
     startTimer();
   }, [startTimer]);
 
-  // Handle file upload
-  const handleFileLoaded = useCallback((csvContent: string) => {
-    loadPromptsFromCSV(csvContent);
-  }, [loadPromptsFromCSV]);
+  const handleFileLoaded = useCallback(
+    (csvContent: string) => {
+      loadPromptsFromCSV(csvContent);
+    },
+    [loadPromptsFromCSV],
+  );
+
+  // Fetch file from /assets/file.csv
+  useEffect(() => {
+    fetch("/assets/file.csv")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load CSV file");
+        return response.text();
+      })
+      .then((csvContent) => {
+        handleFileLoaded(csvContent);
+      })
+      .catch((error) => {
+        console.error("Error loading CSV:", error);
+      });
+  }, [handleFileLoaded]);
 
   // Handle getting a new prompt
   const handleNewPrompt = useCallback(() => {
     selectNewPrompt();
     resetTimer();
-    startTimer();
+    setTimeout(() => {
+      startTimer();
+    }, 0);
   }, [selectNewPrompt, resetTimer, startTimer]);
 
   // Render the appropriate screen based on app state
   return (
     <div className="min-h-screen bg-gray-50">
       <AnimatePresence mode="wait">
-        {appState === 'start' ? (
+        {appState === "start" ? (
           <motion.div
             key="start-screen"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <StartScreen
-              onStart={handleStart}
-              onFileLoaded={handleFileLoaded}
-              hasUploadedFile={hasUploadedFile}
-            />
+            <StartScreen onStart={handleStart} />
           </motion.div>
         ) : (
           <motion.div
@@ -88,3 +103,4 @@ function App() {
 }
 
 export default App;
+
