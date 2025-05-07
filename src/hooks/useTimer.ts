@@ -4,8 +4,8 @@ import { DEFAULT_TIMER_SECONDS, TIME_INCREMENT } from "../utils/timeUtils";
 
 import UIfx from "uifx";
 
-const tickSound = new UIfx("../../public/assets/beep.mp3");
-const endSound = new UIfx("../../public/assets/end.mp3");
+const tickSound = new UIfx("/assets/beep.mp3");
+const endSound = new UIfx("/assets/end.mp3");
 
 export const useTimer = () => {
   const [seconds, setSeconds] = useState(DEFAULT_TIMER_SECONDS);
