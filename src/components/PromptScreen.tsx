@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import PromptDisplay from './PromptDisplay';
-import CircularTimer from './CircularTimer';
-import ControlButtons from './ControlButtons';
-import { Prompt } from '../types';
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
+import PromptDisplay from "./PromptDisplay";
+import CircularTimer from "./CircularTimer";
+import ControlButtons from "./ControlButtons";
+import { Prompt } from "../types";
+import NumberFlash from "./NumberFlash";
 
 interface PromptScreenProps {
   prompt: Prompt;
@@ -40,16 +41,17 @@ const PromptScreen: React.FC<PromptScreenProps> = ({
       exit={{ opacity: 0 }}
       className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8"
     >
+      <NumberFlash seconds={seconds} isRunning={isRunning}></NumberFlash>
       <div className="w-full max-w-2xl">
         <PromptDisplay prompt={prompt} isCompleted={isCompleted} />
-        
+
         <CircularTimer
           seconds={seconds}
           isRunning={isRunning}
           isPaused={isPaused}
           isCompleted={isCompleted}
         />
-        
+
         <ControlButtons
           onPauseResume={onPauseResume}
           onAddTime={onAddTime}
@@ -64,3 +66,4 @@ const PromptScreen: React.FC<PromptScreenProps> = ({
 };
 
 export default PromptScreen;
+

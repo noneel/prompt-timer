@@ -21,18 +21,13 @@ function App() {
     togglePauseResume,
   } = useTimer();
 
-  const {
-    currentPrompt,
-    hasUploadedFile,
-    loadPromptsFromCSV,
-    selectNewPrompt,
-  } = usePromptsManager();
+  const { currentPrompt, loadPromptsFromCSV, selectNewPrompt } =
+    usePromptsManager();
 
   // Start the prompt session
   const handleStart = useCallback(() => {
     setAppState("prompt");
-    startTimer();
-  }, [startTimer]);
+  }, []);
 
   const handleFileLoaded = useCallback(
     (csvContent: string) => {
@@ -103,4 +98,3 @@ function App() {
 }
 
 export default App;
-

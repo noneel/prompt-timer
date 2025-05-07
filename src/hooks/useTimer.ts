@@ -1,10 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { TimerState } from '../types';
-import { DEFAULT_TIMER_SECONDS, TIME_INCREMENT } from '../utils/timeUtils';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { TimerState } from "../types";
+import { DEFAULT_TIMER_SECONDS, TIME_INCREMENT } from "../utils/timeUtils";
+
+import UIfx from "uifx";
+
+const tickSound = new UIfx("../../public/assets/beep.mp3");
+const endSound = new UIfx("../../public/assets/end.mp3");
 
 export const useTimer = () => {
   const [seconds, setSeconds] = useState(DEFAULT_TIMER_SECONDS);
-  const [timerState, setTimerState] = useState<TimerState>('idle');
+  const [timerState, setTimerState] = useState<TimerState>("idle");
   const intervalRef = useRef<number | null>(null);
 
   // Clean up the interval when component unmounts
@@ -16,20 +21,31 @@ export const useTimer = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (seconds === 0 && timerState === "running") {
+      setTimerState("completed");
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+
+    // Every minute (exept the first) play a sound
+    if (seconds % 60 === 0 && seconds != DEFAULT_TIMER_SECONDS) {
+      if (seconds == 0) {
+        endSound.play();
+      } else {
+        tickSound.play();
+      }
+    }
+  }, [seconds, timerState]);
+
   // Timer countdown logic
   useEffect(() => {
-    if (timerState === 'running') {
+    if (timerState === "running") {
       intervalRef.current = window.setInterval(() => {
         setSeconds((prevSeconds) => {
-          if (prevSeconds <= 1) {
-            clearInterval(intervalRef.current!);
-            setTimerState('completed');
-            return 0;
-          }
-          return prevSeconds - 1;
+          return prevSeconds > 0 ? prevSeconds - 1 : 0;
         });
       }, 1000);
-    } else if (timerState === 'paused' && intervalRef.current) {
+    } else if (timerState === "paused" && intervalRef.current) {
       clearInterval(intervalRef.current);
     }
 
@@ -41,15 +57,15 @@ export const useTimer = () => {
   }, [timerState]);
 
   const startTimer = useCallback(() => {
-    setTimerState('running');
+    setTimerState("running");
   }, []);
 
   const pauseTimer = useCallback(() => {
-    setTimerState('paused');
+    setTimerState("paused");
   }, []);
 
   const resumeTimer = useCallback(() => {
-    setTimerState('running');
+    setTimerState("running");
   }, []);
 
   const resetTimer = useCallback(() => {
@@ -57,7 +73,7 @@ export const useTimer = () => {
       clearInterval(intervalRef.current);
     }
     setSeconds(DEFAULT_TIMER_SECONDS);
-    setTimerState('idle');
+    setTimerState("idle");
   }, []);
 
   const addTime = useCallback(() => {
@@ -65,9 +81,9 @@ export const useTimer = () => {
   }, []);
 
   const togglePauseResume = useCallback(() => {
-    if (timerState === 'running') {
+    if (timerState === "running") {
       pauseTimer();
-    } else if (timerState === 'paused' || timerState === 'idle') {
+    } else if (timerState === "paused" || timerState === "idle") {
       resumeTimer();
     }
   }, [timerState, pauseTimer, resumeTimer]);
@@ -75,9 +91,9 @@ export const useTimer = () => {
   return {
     seconds,
     timerState,
-    isRunning: timerState === 'running',
-    isPaused: timerState === 'paused',
-    isCompleted: timerState === 'completed',
+    isRunning: timerState === "running",
+    isPaused: timerState === "paused",
+    isCompleted: timerState === "completed",
     startTimer,
     pauseTimer,
     resumeTimer,
@@ -86,3 +102,4 @@ export const useTimer = () => {
     togglePauseResume,
   };
 };
+
