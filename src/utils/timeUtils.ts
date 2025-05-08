@@ -1,5 +1,5 @@
 export const MIN = 60;
-export const DEFAULT_TIMER_SECONDS = 7.25 * MIN; // 7 mins 15 seconds
+export const DEFAULT_TIMER_SECONDS = 1 * MIN; // 7 mins 15 seconds
 export const WARNING_THRESHOLD = 3 * MIN; // 3 minutes in seconds
 export const DANGER_THRESHOLD = MIN; // 1 minute in seconds
 export const TIME_INCREMENT = MIN / 2; // 30 seconds

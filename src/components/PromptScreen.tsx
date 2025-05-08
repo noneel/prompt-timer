@@ -66,4 +66,3 @@ const PromptScreen: React.FC<PromptScreenProps> = ({
 };
 
 export default PromptScreen;
-
