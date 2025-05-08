@@ -44,7 +44,7 @@ export const useTimer = () => {
         setSeconds((prevSeconds) => {
           return prevSeconds > 0 ? prevSeconds - 1 : 0;
         });
-      }, 100);
+      }, 1000);
     } else if (timerState === "paused" && intervalRef.current) {
       clearInterval(intervalRef.current);
     }
