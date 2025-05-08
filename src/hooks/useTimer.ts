@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { TimerState } from "../types";
-import { DEFAULT_TIMER_SECONDS, TIME_INCREMENT } from "../utils/timeUtils";
+import { DEFAULT_TIMER_SECONDS, MIN, TIME_INCREMENT } from "../utils/timeUtils";
 
 import UIfx from "uifx";
 
@@ -28,7 +28,7 @@ export const useTimer = () => {
     }
 
     // Every minute (exept the first) play a sound
-    if (seconds % 60 === 0 && seconds != DEFAULT_TIMER_SECONDS) {
+    if (seconds % MIN === 0 && seconds != DEFAULT_TIMER_SECONDS) {
       if (seconds == 0) {
         endSound.play();
       } else {
@@ -102,4 +102,3 @@ export const useTimer = () => {
     togglePauseResume,
   };
 };
-

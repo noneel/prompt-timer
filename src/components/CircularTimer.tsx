@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatTime, getTimerColor } from "../utils/timeUtils";
+import {
+  DEFAULT_TIMER_SECONDS,
+  formatTime,
+  getColorByTime,
+} from "../utils/timeUtils";
 import { TimerDisplayProps } from "../types";
 
 const CircularTimer: React.FC<TimerDisplayProps> = ({
@@ -10,20 +14,12 @@ const CircularTimer: React.FC<TimerDisplayProps> = ({
   isCompleted,
 }) => {
   // Calculate timer values
-  const timerColor = getTimerColor(seconds);
-  const normalizedTime = useMemo(() => seconds / (8 * 60), [seconds]);
+  const normalizedTime = useMemo(
+    () => seconds / DEFAULT_TIMER_SECONDS,
+    [seconds],
+  );
   const circumference = 2 * Math.PI * 45; // r = 45
   const dashOffset = circumference * (1 - normalizedTime);
-
-  // Determine display classes based on timer state
-  const colorClasses = {
-    primary: "text-primary-600 stroke-primary-500",
-    warning: "text-warning-500 stroke-warning-400",
-    danger: "text-danger-600 stroke-danger-500",
-  };
-
-  const currentColorClass =
-    colorClasses[timerColor as keyof typeof colorClasses];
 
   // Render nothing if completed
   if (isCompleted) {
@@ -63,7 +59,7 @@ const CircularTimer: React.FC<TimerDisplayProps> = ({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
-            className={currentColorClass}
+            className={getColorByTime(seconds)}
             transform="rotate(-90 50 50)"
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: dashOffset }}
@@ -77,7 +73,7 @@ const CircularTimer: React.FC<TimerDisplayProps> = ({
         {/* Time display */}
         <div className="absolute flex flex-col items-center justify-center">
           <motion.div
-            className={`text-4xl font-semibold ${currentColorClass}`}
+            className={`text-4xl font-semibold ${getColorByTime(seconds)}`}
             key={seconds}
             initial={{ scale: 1.1, opacity: 0.7 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -103,4 +99,3 @@ const CircularTimer: React.FC<TimerDisplayProps> = ({
 };
 
 export default CircularTimer;
-
