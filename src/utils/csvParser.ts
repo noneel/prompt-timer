@@ -13,11 +13,7 @@ export const parseCSV = (csvContent: string): Prompt[] => {
   for (let i = startIndex; i < lines.length; i++) {
     const line = lines[i].trim();
     if (line) {
-      // If there are commas in the CSV, we only take the first column as the prompt
-      const promptText = line.split(',')[0].trim().replace(/^"|"$/g, '');
-      if (promptText) {
-        prompts.push({ prompt: promptText });
-      }
+	prompts.push({ prompt: line });
     }
   }
   
